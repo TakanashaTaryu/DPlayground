@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeMirror Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #controls {
+            display: flex;
+            padding: 10px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+        }
+
+        #editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ccc;
+        }
+
+        #editor {
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        #output {
+            padding: 20px;
+            background: #f9f9f9;
+            flex: 1;
+        }
+
+        #side-text {
+            width: 45%;
+            padding: 20px;
+            background: #e9e9e9;
+            border-left: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .CodeMirror {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="side-text">
+        <h3>Instructions</h3>
+        <span>Hi there! Follow these instructions to write and run your code:</span>
+        <ul>
+            <li>Select a programming language from the dropdown.</li>
+            <li>Write your code in the editor.</li>
+            <li>Click the "Run" button to execute your code.</li>
+            <li>See the output below the editor.</li>
+        </ul>
+    </div>
+    <div id="editor-container">
+        <div id="controls">
+            <select id="language-select">
+                <option value="c">C</option>
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+            </select>
+            <button id="run-button">Run</button>
+        </div>
+        <div id="editor"></div>
+        <div id="output">
+            <h3>Output</h3>
+            <pre id="output-text"></pre>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/python/python.min.js"></script>
+    <script src="https://unpkg.com/picoc-js@1.0.12/dist/bundle.umd.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/pyodide@0.22.1/pyodide.min.js"></script> -->
+
+    <script>
+        // Initialize CodeMirror
+        const editor = CodeMirror(document.getElementById('editor'), {
+            mode: 'c',
+            lineNumbers: true,
+            value: `#include <stdio.h>\nint main() {\n   // printf() displays the string inside quotation\n   printf("Hello, World!\\n");\n   return 0;\n}`
+        });
+
+        const output = document.getElementById('output-text');
+        let pyodide = null;
+        loadPyodide({
+            stdout: (text) => { output.textContent = text; },
+            stderr: (text) => { output.textContent = text; }
+        }).then((pyodideInstance) => {
+            pyodide = pyodideInstance;
+        });
+      
+
+        // Function to run the code and display the output
+        async function runCode() {
+            const code = editor.getValue();
+            const outputElement = document.getElementById('output-text');
+            const language = document.getElementById('language-select').value;
+
+
+            outputElement.textContent = ''; // Clear previous output
+
+            if (language === 'javascript') {
+                try {
+                    // Capture the console.log output
+                    let consoleOutput = '';
+                    const originalConsoleLog = console.log;
+                    console.log = (message) => {
+                        consoleOutput += message + '\n';
+                    };
+
+                    // Run the code
+                    eval(code);
+
+                    // Restore original console.log function
+                    console.log = originalConsoleLog;
+
+                    // Display the output
+                    outputElement.textContent = consoleOutput;
+                } catch (error) {
+                    outputElement.textContent = 'Error: ' + error.message;
+                }
+            } else if (language === 'python') {
+                if (pyodide) {
+                    await pyodide.runPythonAsync(code);
+                } else {
+                    outputElement.textContent = 'Pyodide is still loading.';
+                }
+            } else if (language === 'c') {
+                try {
+                    picocjs.runC(code, (output) => {
+                        outputElement.textContent = output;
+                    });
+                } catch (error) {
+                    outputElement.textContent = 'Error: ' + error.message;
+                }
+            }
+        }
+
+        // Run the code when the button is clicked
+        document.getElementById('run-button').addEventListener('click', runCode);
+
+        // Change the editor mode based on the selected language
+        document.getElementById('language-select').addEventListener('change', function () {
+            const language = this.value;
+            let mode = 'c';
+            if (language === 'python') {
+                mode = 'python';
+                editor.setValue('# Write your Python code here\n\nprint("Hello, World!")');
+            } else if (language === 'c') {
+                mode = { name: 'text/x-csrc' };
+                editor.setValue(`#include <stdio.h>\nint main() {\n   // printf() displays the string inside quotation\n   printf("Hello, World!\\n");\n   return 0;\n}`);
+            } else if (language === 'javascript') {
+                editor.setValue('// Write your JavaScript code here\n\nconsole.log("Hello, World!");');
+            }
+            editor.setOption('mode', mode);
+        });
+    </script>
+</body>
+
+</html>
