@@ -1,8 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# D'Playground - A 23' Assistants Project
+
+![](public/d-playground-logo.svg)
+
+Not really serious, just making it for a joke.
+
+FR would be funny if running a C compiler, a Python interpreter, and a Linux VM was possible in a browser (spoiler alert yes it is and with a lot of pain to boot with)
 
 ## Getting Started
 
-First, run the development server:
+Install [`Node.js`](https://nodejs.org/en) (it comes with npm installed). 
+
+_Optionally install your favorite package manager (yarn, pnpm, bun, or don't)_
+
+If you're on Windows, download [`git`](https://git-scm.com/downloads)
+
+Clone the repository and get inside it:
+```bash
+git clone -b gimmick https://github.com/TakanashaTaryu/DPlayground/
+cd DPlayground
+```
+
+Download libraries and dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -16,10 +46,6 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -29,8 +55,11 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Credits
+- **Daskom** assistants for setting up this situation
+- **Vercel** for `Next.js`
+- [**@SAWARATSUKI**](https://twitter.com/sawaratsuki1004) for the `Python`, `C`, `Arch Linux`, and `404 Not Found` logos
+- **Zik Saleeba** for `PicoC` and **Krithik Rao**  for [`picoc-js`](https://github.com/KritR/picoc-js)
+- `Pyodide` team (upcoming Python course)
+- copy for `v86` (upcoming Linux course)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
