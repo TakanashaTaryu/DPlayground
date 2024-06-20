@@ -1,21 +1,18 @@
-import CLayout from "@/components/CLayout";
-import { Inter } from "next/font/google";
+import CLayout from '@/components/CLayout';
+import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ["latin"] });
-
+const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        <CLayout>
-        {children}
-        </CLayout>
-        </body>
-    </html>
-  );
+	return (
+		<html lang='en'>
+			<body className={inter.className + 'text-sm'}>
+				<CLayout>{children}</CLayout>
+			</body>
+		</html>
+	);
 }
