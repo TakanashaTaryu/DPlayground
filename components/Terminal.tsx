@@ -38,7 +38,7 @@ const Terminal: React.FC<TerminalProps> = ({
 	return (
 		<div className={`flex flex-col h-full ${className}`}>
 			<div className='flex-1 bg-[#1e1e1e] p-4 overflow-y-auto'>
-				<pre className='text-white whitespace-pre-wrap'>
+				<pre className='text-white whitespace-pre-wrap break-words max-w-full'>
 					{value}
 				</pre>
 			</div>
